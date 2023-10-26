@@ -1,6 +1,7 @@
 package guru.springframework.msscbeerservice.web.controller;
 
 import guru.springframework.msscbeerservice.web.model.BeerDto;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,15 @@ public class BeerController {
         return new ResponseEntity<>(BeerDto.builder().build(), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity saveNewBeer(@RequestBody BeerDto beerDto) {
-        // todo impl
-        return new ResponseEntity(HttpStatus.CREATED);
+        HttpHeaders headers = new HttpHeaders();
+        // todo formal implementation. For now, echo back object
+        if (beerDto.getId() == null) {
+            beerDto.setId(UUID.randomUUID());
+        }
+        headers.add("location", "/api/v1/beer/" + beerDto.getId().toString());
+        return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @PutMapping("/{beerId}")
